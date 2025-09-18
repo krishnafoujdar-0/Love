@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Beautiful Moments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.min.js"></script>
+    <style>
+        body {
+            font-family: 'Dancing Script', cursive;
+            overflow: hidden;
+            background-color: #1a0000; /* Dark romantic background */
+        }
+        
+        #hearts-container, #slideshow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        #main-content {
+            z-index: 2;
+            position: relative;
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 0, 0, 0.7);
+            opacity: 0;
+            transform: rotate(-45deg);
+            animation: float-up 10s infinite linear;
+        }
+        .heart::before, .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 0, 0, 0.7);
+            border-radius: 50%;
+        }
+        .heart::before { top: -10px; left: 0; }
+        .heart::after { top: 0; left: 10px; }
+
+        @keyframes float-up {
+            0% { transform: translateY(100vh) rotate(-45deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(-45deg); opacity: 0; }
+        }
+        
+        /* Photo par Ken Burns (slow zoom) effect ke liye CSS */
+        #slideshow-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: scale(1);
+            transition: opacity 1.5s ease-in-out, transform 4.5s ease-in-out;
+        }
+
+        #slideshow-image.visible {
+            opacity: 1;
+            transform: scale(1.1); /* Dheere se zoom in hoga */
+        }
+        
+        .glow-button { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 10px 20px rgba(255, 82, 82, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
+        }
+
+        .fade-in { animation: fadeIn 2s ease-in-out forwards; }
+        .fade-out { animation: fadeOut 1.5s ease-in-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.8); } }
+    </style>
+</head>
+<body class="bg-gradient-to-t from-black via-rose-900 to-black">
+
+    <div id="hearts-container"></div>
+    <div id="slideshow-container" class="hidden">
+        <img id="slideshow-image" src="" alt="Romantic Memory">
+    </div>
+
+    <button id="music-toggle" class="hidden absolute top-4 right-4 bg-white/30 backdrop-blur-sm text-white p-3 rounded-full z-20">
+        <svg id="music-on-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <svg id="music-off-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M9 18V5l12-2v13"/><path d="m9 9-6 6"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </button>
+    
+    <div id="main-content" class="flex items-center justify-center min-h-screen">
+        <div id="start-screen" class="text-center text-white p-4">
+            <h1 class="text-4xl md:text-6xl mb-8 leading-tight" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                Are you ready to see our beautiful story?
+            </h1>
+            <button id="ready-button" class="glow-button bg-white text-rose-500 text-2xl md:text-3xl font-bold py-4 px-10 rounded-full shadow-lg transition-transform transform hover:scale-105">
+                Yes, I'm ready!
+            </button>
+        </div>
+
+        <div id="surprise-screen" class="hidden text-center text-white p-4 flex-col items-center">
+             <h1 class="text-5xl md:text-7xl mb-6" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">And the best part of my story is YOU!</h1>
+             <div class="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-2xl border-4 border-white bg-gray-200 flex items-center justify-center mt-8">
+                 <img src="pic10.jpg" 
+                      alt="The most beautiful person" 
+                      class="w-full h-full object-cover"
+                      onerror="this.onerror=null;this.src='https://placehold.co/400x400/FFC0CB/333333?text=Final+Photo';">
+             </div>
+             <p class="mt-4 text-2xl text-gray-100">Always and Forever.</p>
+        </div>
+    </div>
+
+    <script>
+        const startScreen = document.getElementById('start-screen');
+        const surpriseScreen = document.getElementById('surprise-screen');
+        const readyButton = document.getElementById('ready-button');
+        const heartsContainer = document.getElementById('hearts-container');
+        const musicToggle = document.getElementById('music-toggle');
+        const musicOnIcon = document.getElementById('music-on-icon');
+        const musicOffIcon = document.getElementById('music-off-icon');
+        const slideshowContainer = document.getElementById('slideshow-container');
+        const slideshowImage = document.getElementById('slideshow-image');
+
+        // --- 10 PHOTOS KE NAAM YAHAAN HAIN ---
+        const images = [
+            'pic1.jpg', 'pic2.jpg', 'pic3.jpg', 'pic4.jpg', 
+            'pic5.jpg', 'pic6.jpg', 'pic7.jpg', 'pic8.jpg', 
+            'pic9.jpg', 'pic10.jpg'
+        ];
+        
+        images.forEach((img, i) => {
+            const tempImg = new Image();
+            tempImg.src = img;
+            tempImg.onerror = () => {
+                images[i] = `https://placehold.co/1920x1080/4a044e/ffffff?text=Photo+${i+1}`;
+            };
+        });
+
+        // --- Romantic Piano Music (Online) ---
+        const song = new Tone.Player({
+             url: "https://cdn.pixabay.com/audio/2022/02/14/audio_206a3e50b3.mp3",
+             loop: true,
+             autostart: false,
+             volume: -5,
+        }).toDestination();
+        
+        async function startMusic() {
+            // Suru karne se pehle check karo ki Tone.js taiyaar hai ya nahi
+            if (Tone.context.state !== 'running') {
+                await Tone.start();
+            }
+            song.start();
+        }
+
+        // --- Background Hearts ---
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 5 + 5 + 's';
+            heartsContainer.appendChild(heart);
+            setTimeout(() => heart.remove(), 10000);
+        }, 500);
+
+        // --- Slideshow Logic ---
+        let currentImageIndex = 0;
+        let slideshowInterval;
+
+        function playSlideshow() {
+            if (currentImageIndex >= images.length) {
+                clearInterval(slideshowInterval);
+                slideshowContainer.classList.add('fade-out');
+                 setTimeout(() => {
+                    slideshowContainer.classList.add('hidden');
+                    surpriseScreen.classList.remove('hidden');
+                    surpriseScreen.classList.add('fade-in', 'flex');
+                 }, 1500);
+                return;
+            }
+            
+            slideshowImage.classList.remove('visible');
+
+            setTimeout(() => {
+                slideshowImage.src = images[currentImageIndex];
+                slideshowImage.classList.add('visible');
+                currentImageIndex++;
+            }, 1500);
+        }
+        
+        // --- BUTTON KA FIXED CLICK EVENT ---
+        // Ek flag banaya taaki button baar baar na dabe
+        let hasStarted = false;
+        readyButton.addEventListener('click', () => {
+            if (hasStarted) return; // Agar pehle hi start ho chuka hai to kuch mat karo
+            hasStarted = true;
+
+            readyButton.disabled = true; // Button ko disable kar do
+            readyButton.innerText = "Please Wait...";
+
+            // Music chalao
+            startMusic().catch(error => {
+                console.error("Music nahi chala:", error);
+                // Agar music me dikkat aaye, tab bhi slideshow chalega
+            }).finally(() => {
+                // Music चले या न चले, animation shuru karo
+                musicToggle.classList.remove('hidden');
+                startScreen.classList.add('fade-out');
+
+                setTimeout(() => {
+                    startScreen.classList.add('hidden');
+                    slideshowContainer.classList.remove('hidden');
+                    playSlideshow();
+                    slideshowInterval = setInterval(playSlideshow, 4500);
+                }, 1500);
+            });
+        });
+        
+        musicToggle.addEventListener('click', () => {
+             if (song.state === 'started') {
+                song.stop();
+                musicOnIcon.classList.add('hidden');
+                musicOffIcon.classList.remove('hidden');
+            } else {
+                // Yahan dobara startMusic call karenge
+                startMusic();
+                musicOnIcon.classList.remove('hidden');
+                musicOffIcon.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
